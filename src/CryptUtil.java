@@ -37,13 +37,20 @@ public class CryptUtil {
 	private static String keyFolderPath=null;
 	private static String passWord=null;
 	private static Cipher cipher=null;
+	private static Credential credential=null;
+	private static int credentialIndex=0;
+	private static String [] folderPath;
 	
 	
-	public CryptUtil(String encryptFolderPath, String keyFolderPath, String passWord) {
+	
+	
+	public CryptUtil(String encryptFolderPath, String keyFolderPath, String passWord,Credential credential) throws Exception {
 		this.encryptFolderPath=encryptFolderPath;
 		this.keyFolderPath=keyFolderPath;
 		this.passWord=passWord;
-		
+		this.credential=credential;
+		this.credentialIndex=DataUtil.getCredentialIndex(credential);
+		this.folderPath=DataUtil.getFolderPathArray(credential);
 	}
 
 	public static void generateKey() throws Exception {
@@ -51,7 +58,7 @@ public class CryptUtil {
 		byte [] salt=new byte [8];
 		SecureRandom secureRandom=new SecureRandom();
 		secureRandom.nextBytes(salt);
-		FileOutputStream saltOutputStream=new FileOutputStream(keyFolderPath+"salt.enc");
+		FileOutputStream saltOutputStream=new FileOutputStream(keyFolderPath+credentialIndex+"salt.enc");
 		saltOutputStream.write(salt);
 		saltOutputStream.close();
 		
@@ -65,7 +72,7 @@ public class CryptUtil {
         AlgorithmParameters params = cipher.getParameters();
         
         // IV : Random adds for more secure
-        FileOutputStream ivOutFile = new FileOutputStream(keyFolderPath + "iv.enc");
+        FileOutputStream ivOutFile = new FileOutputStream(keyFolderPath + credentialIndex+"iv.enc");
         byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
         ivOutFile.write(iv);
         ivOutFile.close();	
@@ -73,7 +80,10 @@ public class CryptUtil {
 	
 	public static void encryptFile() throws Exception {
 		Collection<File> treeEncryptionFolder = new ArrayList<>();
-        addTree(new File(encryptFolderPath), treeEncryptionFolder);
+		for (String folderPath:CryptUtil.folderPath) {
+			addTree(new File(folderPath), treeEncryptionFolder);
+		}
+        //addTree(new File(encryptFolderPath), treeEncryptionFolder);
         for(File file : treeEncryptionFolder) {
             String filename = file.getAbsolutePath();
 
@@ -116,13 +126,13 @@ public class CryptUtil {
 	 public static void loadKey() throws Exception {
 
 	        // Reading Salt file
-	        FileInputStream saltFis = new FileInputStream(keyFolderPath + "salt.enc");
+	        FileInputStream saltFis = new FileInputStream(keyFolderPath +credentialIndex+"salt.enc");
 	        byte[] salt = new byte[8];
 	        saltFis.read(salt);
 	        saltFis.close();
 
 	        // Reading IV file
-	        FileInputStream ivFis = new FileInputStream(keyFolderPath + "iv.enc");
+	        FileInputStream ivFis = new FileInputStream(keyFolderPath + credentialIndex+"iv.enc");
 	        byte[] iv = new byte[16];
 	        ivFis.read(iv);
 	        ivFis.close();
@@ -140,7 +150,10 @@ public class CryptUtil {
 	 public static void decryptionFile() throws Exception {
 
 	        Collection<File> treeEncryptionFolder = new ArrayList<>();
-	        addTree(new File(encryptFolderPath), treeEncryptionFolder);
+	        for (String folderPath:CryptUtil.folderPath) {
+				addTree(new File(folderPath), treeEncryptionFolder);
+			}
+	        //addTree(new File(encryptFolderPath), treeEncryptionFolder);
 
 	        for(File file : treeEncryptionFolder) {
 	            String filename = file.getAbsolutePath();

@@ -3,6 +3,14 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-io-2.4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/common-io-2.4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/json"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-lang"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-logining"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hsqldb"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jackess"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ucanaccess"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-lang-2.6"/>
 	<classpathentry kind="lib" path="src/bluecove-2.1.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
