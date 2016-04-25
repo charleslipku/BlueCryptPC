@@ -11,7 +11,7 @@ public class JSONUtil {
 	
 	public static void parseJSON(String jsonString,Credential credential) {
 		JSONObject jsonObject = new JSONObject(jsonString);
-		credential.device_key=jsonObject.getString("DEVICE.KEY");
-		credential.user_key=jsonObject.getString("USER.KEY");
+		credential.device_key=jsonObject.getString("DEVICE_KEY");
+		credential.user_key=jsonObject.getString("USER_KEY");
 	}
 }

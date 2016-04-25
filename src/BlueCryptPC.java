@@ -91,21 +91,29 @@ public class BlueCryptPC {
 		System.out.println("Remote device address: "+remoteDevice.getBluetoothAddress());
 	    System.out.println("Remote device name: "+remoteDevice.getFriendlyName(true));
 
-	    InputStream inputStream=streamConnection.openInputStream();
+	    
+	    /*InputStream inputStream=streamConnection.openInputStream();
 		BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
 		readMessage=bufferedReader.readLine();
-		System.out.println(readMessage);
+		System.out.println(readMessage);*/
+	    ReadThread readThread=new ReadThread(streamConnection, readMessage);
+	    readThread.start();
+		System.out.println("Read:"+readMessage);
+	    
 		//receive message 1 from client, initial a credential for the client
 		
-		JSONUtil.parseJSON(readMessage, credential);
+		/*JSONUtil.parseJSON(readMessage, credential);
 		String response_success = JSONUtil.generateJSON("Success");
-		String response_fail = JSONUtil.generateJSON("Fail, you are a new user!");
+		String response_fail = JSONUtil.generateJSON("Fail, you are a new user!");*/
 		
 		
 		//send feedback to client;
-		OutputStream outputStream=streamConnection.openOutputStream();
+		WriteThread writeThread=new WriteThread("Success!", streamConnection);
+		writeThread.start();
+		/*OutputStream outputStream=streamConnection.openOutputStream();
 		PrintWriter printWriter=new PrintWriter(new OutputStreamWriter(outputStream));
-		if (DataUtil.checkCredential(credential)) {
+		printWriter.write(response_success);*/
+		/*if (DataUtil.checkCredential(credential)) {
 			printWriter.write(response_success);
 		}else {
 			printWriter.write(response_fail);
@@ -113,7 +121,7 @@ public class BlueCryptPC {
 		}
 		printWriter.flush();
 		printWriter.close();
-	    
+	    */
 	}
 
 	/**
