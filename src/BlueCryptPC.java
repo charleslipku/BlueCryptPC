@@ -194,7 +194,7 @@ public class BlueCryptPC {
 		
 		JButton btnEncrypt;
 		btnEncrypt = new JButton("Encrypt");
-		/*btnEncrypt.addMouseListener(new MouseAdapter() {
+		btnEncrypt.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				JFileChooser jfc=new JFileChooser();  
@@ -208,17 +208,17 @@ public class BlueCryptPC {
 		        }  
 		        System.out.println(jfc.getSelectedFile().getName());
 		        
-		        try {
+		        /*try {
 		        	CryptUtil cryptUtil=new CryptUtil(file.getAbsolutePath().replaceAll("\\\\", "/"), "C:\\Users\\charles\\Desktop\\keyfolder\\", "zx9956123",credential);
 		        	cryptUtil.generateKey();
 					cryptUtil.encryptFile();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} 
+				} */
 		        
 			}
-		});*/
+		});
 		
 		JButton btnDecrypt = new JButton("Decrypt");
 		btnDecrypt.addMouseListener(new MouseAdapter() {

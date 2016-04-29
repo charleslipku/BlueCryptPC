@@ -7,13 +7,13 @@ import javax.microedition.io.StreamConnection;
 
 public class WriteThread extends Thread{
 
-	String response;
+	//String response;
 	StreamConnection streamConnection;
 	PrintWriter printWriter;
 	
-	public WriteThread(String response, StreamConnection streamConnection) throws Exception {
+	public WriteThread( StreamConnection streamConnection) throws Exception {
 		
-		this.response = response;
+		//this.response = response;
 		this.streamConnection = streamConnection;
 		OutputStream outputStream = streamConnection.openOutputStream();
 		this.printWriter=new PrintWriter(new OutputStreamWriter(outputStream));
@@ -23,7 +23,7 @@ public class WriteThread extends Thread{
 	public void run() {
 		// TODO Auto-generated method stub
 		 
-		printWriter.write(response);
+		//printWriter.write(response);
 		printWriter.flush();
 
 	}

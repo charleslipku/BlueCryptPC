@@ -14,4 +14,15 @@ public class JSONUtil {
 		credential.device_key=jsonObject.getString("DEVICE_KEY");
 		credential.user_key=jsonObject.getString("USER_KEY");
 	}
+	
+	public static int parseJSONHeartBeat(String jsonString) {
+		JSONObject jsonObject = new JSONObject(jsonString);
+		if (jsonObject.has("HEARTBEAT")) {
+			int heartBeat=jsonObject.getInt("HEARTBEAT");
+			return heartBeat;
+		}else {
+			return 0;
+		}
+		
+	}
 }

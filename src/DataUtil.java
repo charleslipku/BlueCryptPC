@@ -53,7 +53,7 @@ public class DataUtil {
 	}
 	
 	public static String[] getFolderPathArray(Credential credential) throws Exception {
-		
+	
 		Connection connection = DriverManager.getConnection("jdbc:ucanaccess://credential.accdb","","");
 		java.sql.Statement statement = connection.createStatement();
 		String statementStr= String.format("select DIRECTORY from credential where DEVICE_KEY=\'%s\' and USER_KEY=\'%s\'", credential.device_key,credential.user_key);
