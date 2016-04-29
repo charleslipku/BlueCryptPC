@@ -44,8 +44,8 @@ public class CryptUtil {
 	
 	
 	
-	public CryptUtil(String encryptFolderPath, String keyFolderPath, String passWord,Credential credential) throws Exception {
-		this.encryptFolderPath=encryptFolderPath;
+	public CryptUtil(String [] folderPath, String keyFolderPath, String passWord,Credential credential) throws Exception {
+		this.folderPath=folderPath;
 		this.keyFolderPath=keyFolderPath;
 		this.passWord=passWord;
 		this.credential=credential;
@@ -80,12 +80,13 @@ public class CryptUtil {
 	
 	public static void encryptFile() throws Exception {
 		Collection<File> treeEncryptionFolder = new ArrayList<>();
-		for (String folderPath:CryptUtil.folderPath) {
-			addTree(new File(folderPath), treeEncryptionFolder);
+		for (String filepath:CryptUtil.folderPath) {
+			addTree(new File(filepath), treeEncryptionFolder);
 		}
         //addTree(new File(encryptFolderPath), treeEncryptionFolder);
         for(File file : treeEncryptionFolder) {
             String filename = file.getAbsolutePath();
+            System.out.println("Filename:"+filename);
 
             String noExtFile = FilenameUtils.removeExtension(filename);
             String extFile = FilenameUtils.getExtension(filename);
@@ -113,11 +114,15 @@ public class CryptUtil {
             outFile.close();
 
             // Delete File
-            String[] parts = file.getAbsolutePath().split(encryptFolderPath);
+            for (int i = 0; i < folderPath.length; i++) {
+				
+			
+            String[] parts = file.getAbsolutePath().split(folderPath[0].replaceAll("\\\\", "/"));
             if(file.delete()) {
                 System.out.println("Encrypted : " + parts[parts.length-1]);
             } else {
                 System.err.println("Error : " + parts[parts.length-1]);
+            }
             }
         }
 		
@@ -136,6 +141,8 @@ public class CryptUtil {
 	        byte[] iv = new byte[16];
 	        ivFis.read(iv);
 	        ivFis.close();
+	        
+	        System.out.println("Loading key success!");
 
 	        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 	        KeySpec keySpec = new PBEKeySpec(passWord.toCharArray(), salt, 65536, 256);
@@ -185,11 +192,13 @@ public class CryptUtil {
 	                fos.close();
 
 	                // Delete File
-	                String[] parts = file.getAbsolutePath().split(encryptFolderPath);
+	                for(int i=0;i<folderPath.length;i++){
+	                String[] parts = file.getAbsolutePath().split(folderPath[i].replaceAll("\\\\", "/"));
 	                if(file.delete()) {
 	                    System.out.println("Decrypted : " + parts[parts.length-1]);
 	                } else {
 	                    System.err.println("Error : " + parts[parts.length-1]);
+	                }
 	                }
 	            }
 	        }

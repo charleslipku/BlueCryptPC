@@ -9,27 +9,28 @@ public class WriteThread extends Thread{
 
 	String response;
 	StreamConnection streamConnection;
+	PrintWriter printWriter;
 	
-	public WriteThread(String response, StreamConnection streamConnection) {
+	public WriteThread(String response, StreamConnection streamConnection) throws Exception {
 		
 		this.response = response;
 		this.streamConnection = streamConnection;
+		OutputStream outputStream = streamConnection.openOutputStream();
+		this.printWriter=new PrintWriter(new OutputStreamWriter(outputStream));
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		 
-		try {
-			OutputStream outputStream = streamConnection.openOutputStream();
-			PrintWriter printWriter=new PrintWriter(new OutputStreamWriter(outputStream));
-			printWriter.write(response);
-			printWriter.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		printWriter.write(response);
+		printWriter.flush();
 
+	}
+	public void sendMessage(String message) {
+		printWriter.write(message);
+		printWriter.flush();
+		
 	}
 	
 	

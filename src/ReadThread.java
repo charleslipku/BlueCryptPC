@@ -19,7 +19,9 @@ import javax.microedition.io.StreamConnection;
 public class ReadThread extends Thread{
 
 	StreamConnection streamConnection;
-	String readMessage;
+	volatile String readMessage;
+	private static Credential credential = new Credential();
+	
 	
 	
 	public ReadThread(StreamConnection streamConnection, String readMessage) {
@@ -39,6 +41,7 @@ public class ReadThread extends Thread{
 	    return outSteam.toByteArray();  
 	}  
 
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -52,22 +55,36 @@ public class ReadThread extends Thread{
 				dataInputStream.readFully(buffer);
 				readMessage=new String(buffer);
 				System.out.println(readMessage);
-			
+				WriteThread writeThread=new WriteThread("Connection Success!", streamConnection);
+				writeThread.start();
+				
+				JSONUtil.parseJSON(readMessage, credential);
+				System.out.println("DEVICE_KEY:"+credential.device_key);
+				System.out.println("USER_KEY:"+credential.user_key);
+				String response_success = JSONUtil.generateJSON("Login Success");
+				String response_fail = JSONUtil.generateJSON("Fail, you are a new user!");
+				if (DataUtil.checkCredential(credential)) {
+					writeThread.sendMessage(response_success);
+					System.out.println("Index:"+DataUtil.getCredentialIndex(credential));
+					String [] folderPath = DataUtil.getFolderPathArray(credential);
+					
+//					CryptUtil cryptUtil = new CryptUtil(folderPath, "C:\\Users\\charles\\Desktop\\keyfolder\\", "zx9956123", credential);
+//					cryptUtil.generateKey();
+//					cryptUtil.encryptFile();
+					
+					CryptUtil cryptUtil=new CryptUtil(folderPath, "C:\\Users\\charles\\Desktop\\keyfolder\\", "zx9956123",credential);
+					cryptUtil.loadKey();
+					cryptUtil.decryptionFile();
+				}else {
+					writeThread.sendMessage(response_fail);
+					DataUtil.inserCredential(credential);
+				}
+				
 			}
 			}
-			/*InputStreamReader inputStreamReader=new InputStreamReader(inputStream);
-			BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
-			readMessage=bufferedReader.readLine();*/
-			
-			/*while (readMessage!=null) {
-				
-				System.out.println(readMessage);
-				readMessage=bufferedReader.readLine();
-				
-			}*/
 			
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

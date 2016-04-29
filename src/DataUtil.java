@@ -27,7 +27,9 @@ public class DataUtil {
 	public static boolean checkCredential(Credential credential) throws Exception {
 		Connection connection = DriverManager.getConnection("jdbc:ucanaccess://credential.accdb","","");
 		java.sql.Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery("select * from credential where DEVICE_KEY="+credential.device_key+"and USER_KEY="+credential.user_key);
+		String statementStr = String.format("select * from credential where DEVICE_KEY=\'%s\' and USER_KEY=\'%s\'", credential.device_key,credential.user_key);
+		System.out.println(statementStr);
+		ResultSet resultSet = statement.executeQuery(statementStr);
 		if (resultSet.next()) {
 			return true;
 		}
@@ -40,7 +42,8 @@ public class DataUtil {
 	public static int getCredentialIndex(Credential credential) throws Exception {
 		Connection connection = DriverManager.getConnection("jdbc:ucanaccess://credential.accdb","","");
 		java.sql.Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery("select id from credential where DEVICE_KEY="+credential.device_key+"and USER_KEY="+credential.user_key);
+		String statementStr= String.format("select id from credential where DEVICE_KEY=\'%s\' and USER_KEY=\'%s\'", credential.device_key,credential.user_key);
+		ResultSet resultSet = statement.executeQuery(statementStr);
 		if (resultSet.next()) {
 			return resultSet.getInt(1);
 		}
@@ -53,10 +56,11 @@ public class DataUtil {
 		
 		Connection connection = DriverManager.getConnection("jdbc:ucanaccess://credential.accdb","","");
 		java.sql.Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery("select FOLDER_DIRECTORY from credential where DEVICE_KEY="+credential.device_key+"and USER_KEY="+credential.user_key);
+		String statementStr= String.format("select DIRECTORY from credential where DEVICE_KEY=\'%s\' and USER_KEY=\'%s\'", credential.device_key,credential.user_key);
+		ResultSet resultSet = statement.executeQuery(statementStr);
 		String reString=null;
 		if (resultSet.next()) {
-			reString=resultSet.toString();
+			reString=resultSet.getString(1);
 			String [] folderPath=reString.split(",");
 			return folderPath;
 		}
@@ -66,7 +70,8 @@ public class DataUtil {
 	}
 	public static void inserCredential(Credential credential) throws Exception {
 		Connection connection = DriverManager.getConnection("jdbc:ucanaccess://credential.accdb","","");
-		PreparedStatement preparedStatement = (PreparedStatement)connection.prepareStatement("insert into credential(DEVICE_KEY,USER_KEY) values("+credential.device_key+","+credential.user_key+")");
+		String statement = String.format("insert into credential(DEVICE_KEY,USER_KEY) values(\'%s\', \'%s\')", credential.device_key,credential.user_key);
+		PreparedStatement preparedStatement = (PreparedStatement)connection.prepareStatement(statement);
 		preparedStatement.executeUpdate();
 		preparedStatement.close();
 	}
@@ -76,15 +81,17 @@ public class DataUtil {
 	
 	public static void insertDirectory(Credential credential,String directory) throws Exception {
 		Connection connection = DriverManager.getConnection("jdbc:ucanaccess://credential.accdb","","");
-		PreparedStatement preparedStatement1 = (PreparedStatement)connection.prepareStatement("select FOLDER_DIRECTORY from credential where DEVICE_KEY="+credential.device_key+"and USER_KEY="+credential.user_key);
+		String statement1= String.format("insert DIRECTORY from credential where DEVICE_KEY=\'%s\' and USER_KEY=\'%s\'", credential.device_key,credential.user_key);
+		PreparedStatement preparedStatement1 = (PreparedStatement)connection.prepareStatement(statement1);
 		ResultSet resultSet1=preparedStatement1.executeQuery();
 		String orignalDir=null;
 		if (resultSet1.next()) {
-			orignalDir=resultSet1.toString();
+			orignalDir=resultSet1.getString(1);
 		}
 		preparedStatement1.close();
 		String newDir=orignalDir+","+directory;
-		PreparedStatement preparedStatement2 = (PreparedStatement)connection.prepareStatement("update credential(DEVICE_KEY,USER_KEY) set FOLDER_DIRECTORY="+newDir+"where DEVICE_KEY="+credential.device_key+"and USER_KEY="+credential.user_key);
+		String statement2 = String.format("update credential(DEVICE_KEY,USER_KEY) set DIRECTORY=\'%s\' where DEVICE_KEY=\'%s\' and USER_KEY=\'%s\'",newDir,credential.device_key,credential.user_key);
+		PreparedStatement preparedStatement2 = (PreparedStatement)connection.prepareStatement(statement2);
 		preparedStatement2.executeUpdate();
 	}
 }
